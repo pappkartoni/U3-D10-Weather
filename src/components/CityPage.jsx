@@ -36,6 +36,21 @@ const CityPage = () => {
         }
     }
 
+/*     const getCoordinatesWithThen = () => {
+        try {
+    	    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=7829ebfe5c6e128e7eebe730c3bb0b21`)
+            .then(res => res.json())
+            .then(data => {
+                const {lat, lon} = data[0]
+
+                getWeather(lat, lon)
+                getForecast(lat, lon)
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    } */
+
     const getWeather = async (lat, lon) => {
         try {
             const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=7829ebfe5c6e128e7eebe730c3bb0b21`)
