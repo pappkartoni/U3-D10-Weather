@@ -3,6 +3,7 @@ import { Col, Container, Row, Table } from "react-bootstrap"
 import { useParams } from "react-router"
 import { format } from "date-fns"
 import Forecast from "./Forecast"
+import { useDispatch} from "react-redux"
 
 
 const CityPage = () => {
@@ -12,6 +13,8 @@ const CityPage = () => {
     const [forecastDaDaT, setForecastDaDaT] = useState([])
     const [tmrwIndex, setTmrwIndex] = useState(0)
     const city = useParams().city
+
+    const dispatch = useDispatch()
 
 
     const capitalize = (str) => {
@@ -25,9 +28,9 @@ const CityPage = () => {
                 const data = await res.json()
                 const {lat, lon} = data[0]
 
-                setTmrwIndex((25-new Date(weather.dt*1000).getHours()) % 8)
-                await getWeather(lat, lon)
-                await getForecast(lat, lon)
+                setTmrwIndex(Math.ceil((25-new Date(weather.dt*1000).getHours()) / 3)) // FIX THIS
+                getWeather(lat, lon)
+                getForecast(lat, lon)
             }
         } catch (error) {
             console.log(error)
@@ -40,7 +43,7 @@ const CityPage = () => {
             if (res.ok) {
                 const data = await res.json()
                 setWeather({...data})
-                console.log("weather is", weather)
+                console.log("weather is", data)
             } else {
                 throw new Error(res.status + res.statusText)
             }
@@ -57,7 +60,7 @@ const CityPage = () => {
                 setForecastTmrw(data.list.slice(tmrwIndex,8+tmrwIndex))
                 setForecastDaT(data.list.slice(8+tmrwIndex,16+tmrwIndex))
                 setForecastDaDaT(data.list.slice(16+tmrwIndex,24+tmrwIndex))
-                console.log("forecast is", data.list)
+                console.log("forecast is", forecastTmrw)
             } else {
                 throw new Error(res.status + res.statusText)
             }
@@ -66,14 +69,25 @@ const CityPage = () => {
         }
     }
 
+    const setRecent = () => {
+        dispatch({type: "SET_RECENT", payload: {name: weather.name, temp: weather.main.temp.toFixed(0), icon: weather.weather[0].icon}})
+    }
+
     useEffect(() => {
         getCoordinates()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-    useEffect(() => {
+    useEffect(() => { // FIX THIS
         getCoordinates()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [city])
+
+    useEffect(() => {
+        if (Object.keys(weather).length) {
+            setRecent()
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [weather])
 
     return (
         <div className="py-2">
@@ -99,11 +113,11 @@ const CityPage = () => {
                                 <tbody>
                                     <tr>
                                         <td>Max/Min</td>
-                                        <td>{weather.main.temp_max}°C/{weather.main.temp_min}°C</td>
+                                        <td>{weather.main.temp_max.toFixed(0)}°C/{weather.main.temp_min.toFixed(0)}°C</td>
                                     </tr>
                                     <tr>
                                         <td>Humidity</td>
-                                        <td>{weather.main.humidity}</td>
+                                        <td>{weather.main.humidity}%</td>
                                     </tr>
                                     <tr>
                                         <td>Wind</td>

@@ -1,11 +1,14 @@
 import { useState } from "react"
 import {Button, Container, Form} from "react-bootstrap"
 import { useNavigate } from "react-router"
+import { useSelector } from "react-redux"
 
 const Search = () => {
     const [query, setQuery] = useState("")
     const navigate= useNavigate()
 
+    const recents = useSelector((state) => state.recents)
+    console.log(recents)
     const handleChange = (e) => {
         setQuery(e.target.value)
     }
