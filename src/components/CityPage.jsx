@@ -28,7 +28,6 @@ const CityPage = () => {
                 const data = await res.json()
                 const {lat, lon} = data[0]
 
-                setTmrwIndex(Math.ceil((25-new Date(weather.dt*1000).getHours()) / 3)) // FIX THIS
                 getWeather(lat, lon)
                 getForecast(lat, lon)
             }
@@ -43,6 +42,9 @@ const CityPage = () => {
             if (res.ok) {
                 const data = await res.json()
                 setWeather({...data})
+                console.log("weather is set", weather)
+                setTmrwIndex(Math.ceil((25-new Date(weather.dt*1000).getHours()) / 3)) // FIX THIS
+                console.log("tmrwindex is set", tmrwIndex)
                 console.log("weather is", data)
             } else {
                 throw new Error(res.status + res.statusText)
@@ -74,15 +76,18 @@ const CityPage = () => {
     }
 
     useEffect(() => {
+        console.log("this is happening")
         getCoordinates()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     useEffect(() => { // FIX THIS
+        console.log("city changed to", city)
         getCoordinates()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [city])
 
     useEffect(() => {
+        console.log("weather changed")
         if (Object.keys(weather).length) {
             setRecent()
         }
