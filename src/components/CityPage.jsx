@@ -7,7 +7,9 @@ import Forecast from "./Forecast"
 
 const CityPage = () => {
     const [weather, setWeather] = useState({})
-    const [forecast, setForecast] = useState([])
+    const [forecastTmrw, setForecastTmrw] = useState([])
+    const [forecastDaT, setForecastDaT] = useState([])
+    const [forecastDaDaT, setForecastDaDaT] = useState([])
     const [tmrwIndex, setTmrwIndex] = useState(0)
     const city = useParams().city
 
@@ -52,7 +54,9 @@ const CityPage = () => {
             const res = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=7829ebfe5c6e128e7eebe730c3bb0b21`)
             if (res.ok) {
                 const data = await res.json()
-                setForecast(data.list)
+                setForecastTmrw(data.list.slice(tmrwIndex,8+tmrwIndex))
+                setForecastDaT(data.list.slice(8+tmrwIndex,16+tmrwIndex))
+                setForecastDaDaT(data.list.slice(16+tmrwIndex,24+tmrwIndex))
                 console.log("forecast is", data.list)
             } else {
                 throw new Error(res.status + res.statusText)
@@ -66,6 +70,10 @@ const CityPage = () => {
         getCoordinates()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+    useEffect(() => {
+        getCoordinates()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [city])
 
     return (
         <div className="py-2">
@@ -110,12 +118,12 @@ const CityPage = () => {
                         </Col>
                     </Row>
                 </Container>
-                {forecast.length && <Container>
+                {forecastTmrw.length > 0 && <Container>
                     <h3>See the next days</h3>
 
-                    <Forecast title="Tomorrow" weathers={forecast.slice(tmrwIndex,8+tmrwIndex)} />
-                    <Forecast title={forecast[tmrwIndex+16] ? format(new Date(forecast[tmrwIndex+16].dt*1000), "dd/MM") : "Day after tomorrow"} weathers={forecast.slice(8+tmrwIndex,16+tmrwIndex)} />
-                    <Forecast title={forecast[tmrwIndex+24] ? format(new Date(forecast[tmrwIndex+24].dt*1000), "dd/MM") : "Day after that."} weathers={forecast.slice(16+tmrwIndex,24+tmrwIndex)} />
+                    <Forecast title="Tomorrow" weathers={forecastTmrw} />
+                    <Forecast title={forecastDaT ? format(new Date(forecastDaT[0].dt*1000), "dd/MM") : "Day after that."} weathers={forecastDaT} />
+                    <Forecast title={forecastDaDaT ? format(new Date(forecastDaDaT[0].dt*1000), "dd/MM") : "Day after that."} weathers={forecastDaDaT} />
                 
                 </Container>}
             </section>}

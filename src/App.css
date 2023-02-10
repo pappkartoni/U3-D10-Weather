@@ -10,3 +10,19 @@ section {
   max-width: 800px;
   border-radius: 1rem;
 }
+
+.btn-primary, .form-control {
+  border-radius: 24px;
+}
+
+.form-control {
+  background-color: rgba(45,175,253,0.23573179271708689);
+}
+
+nav .form-control:not(:focus)::placeholder {
+  color: white;
+}
+
+nav a:hover {
+  text-decoration: none;
+}

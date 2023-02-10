@@ -18,18 +18,22 @@ const Search = () => {
     }    
 
     return (
-        <Container className="d-flex align-items-center justify-content-center">
-            <Form onSubmit={handleSubmit}>
-                <Form.Group>
-                    <Form.Label>City</Form.Label>
-                    <Form.Control required onChange={handleChange} type="text" placeholder="Enter city name..." />
-                    <Form.Text>Enter any city name and we'll try to find it 😊</Form.Text>
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    Search
-                </Button>
-            </Form>
-        </Container>
+        <div className="py-5">
+            <section className="bg-white my-5 mx-auto p-3">
+                <Container className="d-flex flex-column">
+                    <h1 className="text-center mb-5">Check the weather in your city of choice!</h1>
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group>
+                            <Form.Control required onChange={handleChange} type="text" placeholder="Enter city name..." />
+                            <Form.Text>Enter any city name and we'll try to find it 😊</Form.Text>
+                        </Form.Group>
+                        <Button variant="primary" type="submit">
+                            Search
+                        </Button>
+                    </Form>
+                </Container>
+            </section>
+        </div>
     )
 }
 
