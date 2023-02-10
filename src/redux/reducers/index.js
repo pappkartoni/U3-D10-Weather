@@ -5,8 +5,12 @@ const initialState = {
 const mainReducer = (state = initialState, action) => {
     switch (action.type) {
         case "SET_RECENT":
-            return {...state,
-                recents: [...state.recents, action.payload]}
+            if (!state.recents.find(r => r.loc === action.payload.loc)) {
+                return {...state,
+                    recents: [...state.recents, action.payload]}
+            } else {
+                return state
+            }
 
         case "REMOVE_RECENT":
             return {...state,
