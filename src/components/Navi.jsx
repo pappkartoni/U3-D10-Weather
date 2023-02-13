@@ -18,6 +18,7 @@ const Navi = (props) => {
         e.preventDefault()
         if (query) {
             console.log("go to", query)
+            setQuery("")
             navigate(`/${query}`)
         }
     }  

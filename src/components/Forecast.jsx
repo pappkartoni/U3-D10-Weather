@@ -7,7 +7,7 @@ const Forecast = (props) => {
             <h4>{props.title}</h4>
             <Row style={{borderBlock: "1px solid gray"}}>
                 {props.weathers.map((w, i) => {
-                    if (i % 2 !== 0) {
+                    if (i % 2 === 0) {
                         return (
                             <Col key={i} className="d-flex flex-column align-items-center">
                                 <h5>{format(new Date(w.dt*1000), "HH:mm b dd/MM")}</h5>

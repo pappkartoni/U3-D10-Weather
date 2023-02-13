@@ -11,14 +11,14 @@ const CityPage = () => {
     const [forecastTmrw, setForecastTmrw] = useState([])
     const [forecastDaT, setForecastDaT] = useState([])
     const [forecastDaDaT, setForecastDaDaT] = useState([])
-    const [tmrwIndex, setTmrwIndex] = useState(0)
+    const [isLoading, setIsLoading] = useState(true)
     const city = useParams().city
 
     const dispatch = useDispatch()
 
 
     const capitalize = (str) => {
-        return str.split(" ").map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(" ") // can't live without a little bit of jank
+        return str.split(" ").map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(" ")
     }
 
     const getCoordinates = async () => {
@@ -29,38 +29,23 @@ const CityPage = () => {
                 const {lat, lon} = data[0]
 
                 getWeather(lat, lon)
-                getForecast(lat, lon)
             }
         } catch (error) {
             console.log(error)
         }
     }
 
-/*     const getCoordinatesWithThen = () => {
-        try {
-    	    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=7829ebfe5c6e128e7eebe730c3bb0b21`)
-            .then(res => res.json())
-            .then(data => {
-                const {lat, lon} = data[0]
-
-                getWeather(lat, lon)
-                getForecast(lat, lon)
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    } */
-
     const getWeather = async (lat, lon) => {
         try {
             const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=7829ebfe5c6e128e7eebe730c3bb0b21`)
             if (res.ok) {
                 const data = await res.json()
-                setWeather({...data})
-                console.log("weather is set", weather)
-                setTmrwIndex(Math.ceil((25-new Date(weather.dt*1000).getHours()) / 3)) // FIX THIS
-                console.log("tmrwindex is set", tmrwIndex)
-                console.log("weather is", data)
+                const _weather = {...data}
+
+                setWeather(_weather)
+
+                const tmrInd = Math.ceil((25-new Date(_weather.dt*1000).getHours()) / 3)
+                getForecast(lat, lon, tmrInd)
             } else {
                 throw new Error(res.status + res.statusText)
             }
@@ -69,15 +54,17 @@ const CityPage = () => {
         }
     }
 
-    const getForecast = async (lat, lon) => {
+    const getForecast = async (lat, lon, tmrInd) => {
         try {
             const res = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=7829ebfe5c6e128e7eebe730c3bb0b21`)
             if (res.ok) {
                 const data = await res.json()
-                setForecastTmrw(data.list.slice(tmrwIndex,8+tmrwIndex))
-                setForecastDaT(data.list.slice(8+tmrwIndex,16+tmrwIndex))
-                setForecastDaDaT(data.list.slice(16+tmrwIndex,24+tmrwIndex))
-                console.log("forecast is", forecastTmrw)
+                const _forecasts = data.list 
+
+                setForecastTmrw(_forecasts.slice(tmrInd,8+tmrInd))
+                setForecastDaT(_forecasts.slice(8+tmrInd,16+tmrInd))
+                setForecastDaDaT(_forecasts.slice(16+tmrInd,24+tmrInd))
+                setIsLoading(false)
             } else {
                 throw new Error(res.status + res.statusText)
             }
@@ -91,18 +78,12 @@ const CityPage = () => {
     }
 
     useEffect(() => {
-        console.log("this is happening")
-        getCoordinates()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-    useEffect(() => { // FIX THIS
         console.log("city changed to", city)
         getCoordinates()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [city])
 
     useEffect(() => {
-        console.log("weather changed")
         if (Object.keys(weather).length) {
             setRecent()
         }
@@ -152,7 +133,7 @@ const CityPage = () => {
                         </Col>
                     </Row>
                 </Container>
-                {forecastTmrw.length > 0 && <Container>
+                {!isLoading &&  <Container>
                     <h3>See the next days</h3>
 
                     <Forecast title="Tomorrow" weathers={forecastTmrw} />
