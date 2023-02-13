@@ -74,7 +74,7 @@ const CityPage = () => {
     }
 
     const setRecent = () => {
-        dispatch({type: "SET_RECENT", payload: {loc: city, name: weather.name, temp: weather.main.temp.toFixed(0), icon: weather.weather[0].icon}})
+        dispatch({type: "SET_RECENT", payload: {loc: capitalize(city), name: weather.name, temp: weather.main.temp.toFixed(0), icon: weather.weather[0].icon}})
     }
 
     useEffect(() => {

@@ -23,6 +23,22 @@ nav .form-control:not(:focus)::placeholder {
   color: white;
 }
 
-nav a:hover {
+nav a:hover, .recents-row a:hover {
   text-decoration: none;
+}
+
+.recents-row {
+  margin-inline: -30px;
+}
+
+.recent-card {
+  background-color: rgba(0,0,0,0.2);
+  padding: 12px;
+  border-radius: 1rem;
+  text-align: center;
+  color: antiquewhite;
+}
+
+.recent-card h5 {
+  font-size: 24px;
 }

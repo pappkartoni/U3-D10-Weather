@@ -1,7 +1,8 @@
 import { useState } from "react"
-import {Button, Container, Form} from "react-bootstrap"
+import { Button, Container, Form, Row } from "react-bootstrap"
 import { useNavigate } from "react-router"
 import { useSelector } from "react-redux"
+import RecentCard from "./RecentCard"
 
 const Search = () => {
     const [query, setQuery] = useState("")
@@ -36,6 +37,11 @@ const Search = () => {
                     </Form>
                 </Container>
             </section>
+            {recents.length && <section className="my-5 mx-auto p-3">
+                <Row className="recents-row">
+                    {recents.map((rec) => (<RecentCard key={rec.loc} rec={rec} />))}
+                </Row>
+            </section>}
         </div>
     )
 }
